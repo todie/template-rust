@@ -1,0 +1,22 @@
+[package]
+name = "template-rust"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.80.0"
+description = "A template Rust project"
+license = "MIT"
+repository = "https://github.com/todie/template-rust"
+
+[[bin]]
+name = "template-rust"
+path = "src/main.rs"
+
+[dependencies]
+
+[dev-dependencies]
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
+opt-level = 3
