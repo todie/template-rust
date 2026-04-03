@@ -161,6 +161,20 @@ Releases are fully automated via [release-please](https://github.com/googleapis/
 
 ---
 
+
+
+## Related Templates
+
+Looking for a different language? Check out the other todie templates:
+
+| Template | Stack |
+|----------|-------|
+| [template-python](https://github.com/todie/template-python) | Python · uv · ruff · pyright · pytest |
+| [template-node](https://github.com/todie/template-node) | Node.js · TypeScript · Vitest · Biome |
+| [template-terraform](https://github.com/todie/template-terraform) | Terraform · TFLint · Checkov · OPA |
+
+---
+
 ## License
 
 Copyright © 2026 [todie.io](https://todie.io). Released under the [MIT License](LICENSE).

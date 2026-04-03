@@ -79,3 +79,12 @@ and triggers the publish job.
 - **Distroless runtime** — the Docker image runs as `nonroot:nonroot` with no shell. Healthcheck stub assumes a `--health-check` flag; replace with an HTTP probe or remove.
 - **cargo-chef** — dependency layer caching means rebuilds only recompile changed source, not all deps.
 - **MSRV** is `1.80.0` — update `rust-version` in `Cargo.toml` and `msrv` in `clippy.toml` together.
+
+
+## Related Templates
+
+| Language | Repository |
+|----------|------------|
+| Python | [todie/template-python](https://github.com/todie/template-python) |
+| Node.js | [todie/template-node](https://github.com/todie/template-node) |
+| Terraform | [todie/template-terraform](https://github.com/todie/template-terraform) |
