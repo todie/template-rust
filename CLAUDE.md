@@ -1,81 +1,51 @@
-# template-rust — Claude Guide
+# CLAUDE.md — Rust Project (from todie/template-rust)
 
-This is a GitHub template repository for bootstrapping production-grade Rust projects. Fork or
-"Use this template" on GitHub to get a fully wired project with CI, linting, security auditing,
-coverage, and Docker support out of the box.
+## Template Family
+This project was scaffolded from [todie/template-rust](https://github.com/todie/template-rust).
+See also: [template-python](https://github.com/todie/template-python) | [template-node](https://github.com/todie/template-node) | [template-terraform](https://github.com/todie/template-terraform)
 
-## Scaffolding Overview
+## Build & Run
+- `cargo build` — debug build
+- `cargo build --release` — release build (LTO enabled)
+- `cargo run` — run the binary
 
-| File / Dir | Purpose |
-|---|---|
-| `rust-toolchain.toml` | Pins stable Rust channel + required components |
-| `rustfmt.toml` | Opinionated formatting (edition 2021, 100-col, crate-level imports) |
-| `clippy.toml` | Clippy config — CI uses pedantic + nursery, suppresses `module_name_repetitions` |
-| `deny.toml` | `cargo-deny`: license allow-list, bans duplicate deps, advisory checks |
-| `Cargo.toml` | Release profile with LTO=thin, single codegen unit, symbol stripping |
-| `Dockerfile` | Four-stage build: cargo-chef cache → build → distroless runtime (non-root) |
-| `.pre-commit-config.yaml` | Local hooks: fmt check, clippy, deny |
-| `.github/workflows/ci.yml` | Full CI matrix (see below) |
-| `.github/workflows/release.yml` | release-please automated semver |
-| `release-please-config.json` | release-please package config |
-| `.release-please-manifest.json` | release-please version manifest |
+## Test
+- `cargo nextest run` — run tests (preferred over `cargo test`)
+- `cargo nextest run -p <crate>` — test a specific crate
+- `cargo nextest run <test_name>` — run a single test
+- `cargo llvm-cov --lcov` — generate coverage report
 
-## Build Commands
+## Lint & Format
+- `cargo fmt --check` — check formatting
+- `cargo fmt` — auto-format
+- `cargo clippy -- -D warnings -W clippy::pedantic -W clippy::nursery` — full lint pass
+- Pre-commit hooks: `pre-commit run --all-files`
 
-```bash
-# Build
-cargo build
-cargo build --release
-
-# Test (preferred — nextest for speed + better output)
-cargo nextest run
-cargo nextest run --all-features
-
-# Format
-cargo fmt
-cargo fmt --check          # CI mode
-
-# Lint
-cargo clippy --all-targets --all-features -- \
-  -D warnings \
-  -W clippy::pedantic \
-  -W clippy::nursery \
-  -A clippy::module_name_repetitions
-
-# Security
-cargo deny check            # license + advisory + bans
-cargo audit                 # RustSec advisories only
-
-# Coverage
-cargo llvm-cov --all-features --lcov --output-path lcov.info
-
-# Docker
-docker build -t template-rust .
-docker run --rm template-rust
-```
+## Security & Supply Chain
+- `cargo deny check` — license, advisory, ban checks (see deny.toml)
+- `cargo audit` — RUSTSEC advisory database scan
+- `cargo vet` — supply chain trust (when configured)
 
 ## CI Pipeline
+CI runs on every PR: fmt → clippy → nextest → deny → audit → coverage upload.
+Matrix: stable + nightly + MSRV. Miri runs on nightly for unsafe validation.
 
-The CI workflow (`.github/workflows/ci.yml`) runs:
+## Release
+Uses release-please for automated semver. Write conventional commits:
+- `feat:` → minor bump
+- `fix:` → patch bump
+- `feat!:` or `BREAKING CHANGE:` → major bump
+- `chore:`, `docs:`, `refactor:`, `test:`, `ci:` → no version bump
 
-1. **fmt** — `cargo fmt --check` on stable
-2. **clippy** — matrix [stable, nightly]; nightly is `continue-on-error`
-3. **test** — `cargo nextest run` on stable
-4. **deny** — `cargo deny check` (licenses, advisories, bans)
-5. **audit** — `cargo audit` via rustsec/audit-check
-6. **coverage** — `cargo llvm-cov --lcov` → Codecov upload
-7. **miri** — `cargo miri test` on nightly (`continue-on-error`)
-
-## Release Flow
-
-Releases are automated via [release-please](https://github.com/googleapis/release-please).
-Merge a commit with a [Conventional Commit](https://www.conventionalcommits.org/) message to
-`main` and release-please will open a versioned PR. Merging that PR creates a GitHub Release
-and triggers the publish job.
+## Commit Discipline
+- One logical change per commit
+- One commit stack per feature branch
+- File a PR for each feature branch
+- Never bundle unrelated changes
+- Never push directly to main
 
 ## Architecture Notes
-
-- **Single binary** crate layout — add library crates under `crates/` if the project grows into a workspace.
-- **Distroless runtime** — the Docker image runs as `nonroot:nonroot` with no shell. Healthcheck stub assumes a `--health-check` flag; replace with an HTTP probe or remove.
-- **cargo-chef** — dependency layer caching means rebuilds only recompile changed source, not all deps.
-- **MSRV** is `1.80.0` — update `rust-version` in `Cargo.toml` and `msrv` in `clippy.toml` together.
+- Release profile: LTO=thin, codegen-units=1, strip=true
+- Clippy: pedantic + nursery lints enabled (see clippy.toml for allowed exceptions)
+- deny.toml: license allow-list (MIT, Apache-2.0, BSD-2/3, ISC, Unicode-DFS-2016, Zlib)
+- Docker: multi-stage with cargo-chef for dependency caching
