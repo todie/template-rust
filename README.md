@@ -17,6 +17,21 @@
 
 ---
 
+## todie Template Family
+
+This is the **Rust** template. Part of the todie.io standardized project scaffolding.
+
+| Template | Language | Repo |
+|----------|----------|------|
+| **template-rust** | Rust | *you are here* |
+| template-python | Python 3.12+ | [todie/template-python](https://github.com/todie/template-python) |
+| template-node | TypeScript/Node | [todie/template-node](https://github.com/todie/template-node) |
+| template-terraform | Terraform/IaC | [todie/template-terraform](https://github.com/todie/template-terraform) |
+
+All templates follow the [todie.io SOP](https://github.com/todie) — consistent CI/CD, linting, security scanning, release automation, and commit discipline across every project.
+
+---
+
 ## Overview
 
 `template-rust` is a GitHub template repository that gives you a fully-wired Rust project in
